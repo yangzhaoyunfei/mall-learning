@@ -11,12 +11,13 @@ import com.macro.mall.tiny.dto.OssPolicyResult;
 import com.macro.mall.tiny.service.OssService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
-import java.text.SimpleDateFormat;
+import java.nio.charset.StandardCharsets;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
 
 /**
@@ -40,8 +41,11 @@ public class OssServiceImpl implements OssService {
 	@Value("${aliyun.oss.dir.prefix}")
 	private String ALIYUN_OSS_DIR_PREFIX;
 
-	@Autowired
-	private OSSClient ossClient;
+	private final OSSClient ossClient;
+
+	public OssServiceImpl(OSSClient ossClient) {
+		this.ossClient = ossClient;
+	}
 
 	/**
 	 * 签名生成
@@ -50,8 +54,7 @@ public class OssServiceImpl implements OssService {
 	public OssPolicyResult policy() {
 		OssPolicyResult result = new OssPolicyResult();
 		// 存储目录
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
-		String dir = ALIYUN_OSS_DIR_PREFIX+sdf.format(new Date());
+		String dir = ALIYUN_OSS_DIR_PREFIX + LocalDate.now().format(DateTimeFormatter.ofPattern("yyyyMMdd"));
 		// 签名有效期
 		long expireEndTime = System.currentTimeMillis() + ALIYUN_OSS_EXPIRE * 1000;
 		Date expiration = new Date(expireEndTime);
@@ -69,10 +72,10 @@ public class OssServiceImpl implements OssService {
 			policyConds.addConditionItem(PolicyConditions.COND_CONTENT_LENGTH_RANGE, 0, maxSize);
 			policyConds.addConditionItem(MatchMode.StartWith, PolicyConditions.COND_KEY, dir);
 			String postPolicy = ossClient.generatePostPolicy(expiration, policyConds);
-			byte[] binaryData = postPolicy.getBytes("utf-8");
+			byte[] binaryData = postPolicy.getBytes(StandardCharsets.UTF_8);
 			String policy = BinaryUtil.toBase64String(binaryData);
 			String signature = ossClient.calculatePostSignature(postPolicy);
-			String callbackData = BinaryUtil.toBase64String(JSONUtil.parse(callback).toString().getBytes("utf-8"));
+			String callbackData = BinaryUtil.toBase64String(JSONUtil.parse(callback).toString().getBytes(StandardCharsets.UTF_8));
 			// 返回结果
 			result.setAccessKeyId(ossClient.getCredentialsProvider().getCredentials().getAccessKeyId());
 			result.setPolicy(policy);

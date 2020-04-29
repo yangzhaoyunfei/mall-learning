@@ -77,9 +77,10 @@
         </dependency>
         <!--MinIO JAVA SDK-->
         <dependency>
+<!--            https://github.com/minio/minio-java-->
             <groupId>io.minio</groupId>
             <artifactId>minio</artifactId>
-            <version>3.0.10</version>
+            <version>7.0.2</version>
         </dependency>
     </dependencies>
 
