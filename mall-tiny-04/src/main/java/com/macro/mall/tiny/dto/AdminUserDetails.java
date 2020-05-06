@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 /**
- * SpringSecurity需要的用户详情
+ * SpringSecurity定义用于封装用户信息的类（主要是用户信息和权限），需要自行实现；
  * Created by macro on 2018/4/26.
  */
 public class AdminUserDetails implements UserDetails {
