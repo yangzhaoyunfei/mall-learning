@@ -1,8 +1,8 @@
 package com.macro.mall.tiny.config;
 
 import com.macro.mall.tiny.component.JwtAuthenticationTokenFilter;
-import com.macro.mall.tiny.component.RestAuthenticationEntryPoint;
 import com.macro.mall.tiny.component.RestfulAccessDeniedHandler;
+import com.macro.mall.tiny.component.RestfulAuthenticationEntryPoint;
 import com.macro.mall.tiny.dto.AdminUserDetails;
 import com.macro.mall.tiny.mbg.model.UmsAdmin;
 import com.macro.mall.tiny.mbg.model.UmsPermission;
@@ -40,7 +40,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
     private RestfulAccessDeniedHandler restfulAccessDeniedHandler;
     @Autowired
-    private RestAuthenticationEntryPoint restAuthenticationEntryPoint;
+    private RestfulAuthenticationEntryPoint restAuthenticationEntryPoint;
 
     /**
      * 用于配置需要拦截的url路径、jwt过滤器及出异常后的处理器；
